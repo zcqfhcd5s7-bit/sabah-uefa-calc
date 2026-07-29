@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabah FK — UEFA Income Calculator 2026/27</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#141518; --muted:#6b7280; --line:#e5e7eb;
+    --accent:#0b6e4f; --accent2:#0d4f8b; --gold:#b98a00; --danger:#a33;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 16px 80px}
+  header.hero{background:#141518;color:#fff;border-radius:14px;padding:28px 26px;margin-bottom:20px}
+  header.hero h1{margin:0 0 6px;font-size:26px}
+  header.hero .sub{color:#c9ced6;font-size:14px}
+  .status{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:#26282e;border:1px solid #3a3d45;color:#e8eaee;font-size:12.5px;padding:5px 10px;border-radius:999px}
+  .chip b{color:#fff}
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px;margin-bottom:16px}
+  .card h2{margin:0 0 4px;font-size:16px}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+  .branch{display:grid;gap:8px}
+  .branch label{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:14px}
+  .branch label:hover{border-color:#c8ccd2}
+  .branch input{margin-top:3px}
+  .branch label.sel{border-color:var(--accent);background:#f2faf7}
+  .branch .money{margin-left:auto;white-space:nowrap;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap}
+  .row label{width:210px;font-size:14px}
+  .row input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+  .row .val{width:44px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  select{font-size:14px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--line);background:#fff}
+  .note{font-size:12.5px;color:var(--muted)}
+  .warn{color:var(--danger);font-size:12.5px}
+  .total-card{position:sticky;top:14px}
+  .total{font-size:32px;font-weight:800;letter-spacing:-.5px}
+  .total small{font-size:14px;color:var(--muted);font-weight:500}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+  td{padding:6px 2px;border-bottom:1px solid var(--line);vertical-align:top}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.section td{font-weight:700;padding-top:12px;border-bottom:1.5px solid #cfd3d9}
+  tr.totalrow td{font-weight:800;font-size:15px;border-bottom:none;padding-top:10px}
+  .floor{background:#fbf7ec;border:1px solid #eadfc0;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:13.5px}
+  .floor b{color:var(--gold)}
+  .links li{margin-bottom:8px;font-size:14px}
+  .links a{color:var(--accent2);text-decoration:none}
+  .links a:hover{text-decoration:underline}
+  .foot{color:var(--muted);font-size:12px;margin-top:24px}
+  h3.mini{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Sabah FK — UEFA Income Calculator 2026/27</h1>
+  <div class="sub">Based on UEFA Circular No. 48/2026 (13 July 2026) — 2024–27 cycle distribution, €4.4bn gross revenue assumption. All figures gross, subject to final UEFA confirmation.</div>
+  <div class="status">
+    <span class="chip">Path: <b>UCL Champions Path</b></span>
+    <span class="chip">Q1: <b>beat The New Saints</b> ✓</span>
+    <span class="chip">Q2: <b>beat KuPS 3–0 agg</b> ✓</span>
+    <span class="chip">Now: <b>UCL Q3 vs Lech Poznań / AGF winner</b></span>
+    <span class="chip">Guaranteed: <b>≥ Conference League league phase</b></span>
+  </div>
+</header>
+
+<div class="grid">
+<div>
+
+  <div class="card">
+    <h2>1 · Where does the qualifying run end?</h2>
+    <p class="hint">Having won UCL Q2, Sabah is guaranteed at least the Conference League league phase. Pick the branch:</p>
+    <div class="branch" id="branches">
+      <label><input type="radio" name="branch" value="UCL" >
+        <span><b>Win UCL Q3 and win the play-off → Champions League league phase</b><br>
+        <span class="note">No qualifying-round fees (replaced by UCL league-phase package)</span></span>
+        <span class="money">fee €18.62m</span></label>
+      <label><input type="radio" name="branch" value="UELPO">
+        <span><b>Win UCL Q3, lose the play-off → Europa League league phase</b><br>
+        <span class="note">€4.29m UCL play-off elimination payment + UEL package; no per-round fees</span></span>
+        <span class="money">€4.29m + fee €4.31m</span></label>
+      <label><input type="radio" name="branch" value="UEL">
+        <span><b>Lose UCL Q3, win UEL play-off → Europa League league phase</b><br>
+        <span class="note">€175k × 3 rounds played (Q1, Q2, Q3 — UEL PO excluded) + UEL package</span></span>
+        <span class="money">€525k + fee €4.31m</span></label>
+      <label><input type="radio" name="branch" value="UECL" checked>
+        <span><b>Lose UCL Q3, lose UEL play-off → Conference League league phase</b><br>
+        <span class="note">€175k × 4 rounds played (Q1, Q2, Q3, UEL PO) + UECL package — this is the floor path</span></span>
+        <span class="money">€700k + fee €3.17m</span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2 · League phase performance — <span id="compName">Conference League</span></h2>
+    <p class="hint" id="compHint"></p>
+    <div class="row"><label>Wins (<span id="perWin"></span> each)</label>
+      <input type="range" id="wins" min="0" max="6" value="2"><span class="val" id="winsV">2</span></div>
+    <div class="row"><label>Draws (<span id="perDraw"></span> each)</label>
+      <input type="range" id="draws" min="0" max="6" value="1"><span class="val" id="drawsV">1</span></div>
+    <div class="row"><label>Final league-phase rank</label>
+      <input type="range" id="rank" min="1" max="36" value="28"><span class="val" id="rankV">28</span></div>
+    <p class="note" id="rankNote"></p>
+    <div class="row"><label>Value-pillar rank (1–36)</label>
+      <input type="range" id="vrank" min="1" max="36" value="35"><span class="val" id="vrankV">35</span></div>
+    <p class="note">Value pillar = European + non-European parts, each split into 666 shares across the 36 clubs; rank 36 gets 1 share, rank 1 gets 36. Sabah's low coefficient and small media market put it near the bottom — 34–36 is realistic. One rank input is applied to both parts (simplification).</p>
+    <p class="warn" id="warnMsg"></p>
+  </div>
+
+  <div class="card">
+    <h2>3 · Knockout run</h2>
+    <p class="hint">Stage payments are cumulative — each stage reached adds to the total.</p>
+    <select id="ko">
+      <option value="LP">Eliminated in league phase (rank 25–36)</option>
+      <option value="KOPO">Reached KO play-offs, eliminated (rank 9–24)</option>
+      <option value="R16">Reached Round of 16, eliminated</option>
+      <option value="QF">Reached quarter-finals, eliminated</option>
+      <option value="SF">Reached semi-finals, eliminated</option>
+      <option value="F">Reached final, lost</option>
+      <option value="W">Won the competition</option>
+    </select>
+    <p class="note" style="margin-top:8px">Ranks 1–8 skip the KO play-off round (direct to R16, no KO-PO payment). Ranks 25–36 are eliminated in the league phase.</p>
+  </div>
+
+  <div class="card">
+    <h2>Official sources — updating results &amp; rounds</h2>
+    <ul class="links">
+      <li><a href="https://www.uefa.com/uefachampionsleague/clubs/2609356--sabah/matches/" target="_blank">UEFA.com — Sabah club page: fixtures &amp; results</a> (club ID 2609356; same page follows Sabah into UEL/UECL if they drop down)</li>
+      <li><a href="https://www.uefa.com/uefachampionsleague/fixtures-results/" target="_blank">UEFA Champions League — all fixtures &amp; results</a></li>
+      <li><a href="https://www.uefa.com/uefaeuropaleague/fixtures-results/" target="_blank">UEFA Europa League — fixtures &amp; results</a></li>
+      <li><a href="https://www.uefa.com/uefaconferenceleague/fixtures-results/" target="_blank">UEFA Conference League — fixtures &amp; results</a></li>
+      <li><a href="https://www.uefa.com/uefachampionsleague/draws/" target="_blank">UEFA — draws (Q3, play-off and league-phase draws)</a></li>
+      <li><a href="https://www.uefa.com/uefachampionsleague/news/02a6-20e5a8be4e63-ae971c582f8c-1000--champions-league-qualifying-fixtures-results-dates-how-it-/" target="_blank">UEFA — how Champions League qualifying works (dates &amp; paths)</a></li>
+    </ul>
+    <h3 class="mini">Key dates</h3>
+    <p class="note">UCL Q3: 4–5 &amp; 11–12 Aug 2026 · Play-offs / UEL PO: 18–19 &amp; 25–26 Aug · League-phase draws: late Aug · Check the draws page after each round.</p>
+  </div>
+
+</div>
+
+<div>
+  <div class="card total-card">
+    <h2>Projected UEFA income</h2>
+    <div class="total" id="total">€0 <small>gross</small></div>
+    <table id="breakdown"></table>
+    <div class="floor">
+      <b>Guaranteed floor: €3,984,000</b><br>
+      Lose Q3 + lose UEL PO (€700k qualifying fees) + UECL starting fee €3.17m + minimum ranking share €28k + minimum value pillar €86k. Everything above this is upside.
+    </div>
+  </div>
+</div>
+</div>
+
+<p class="foot">
+Amounts per UEFA Circular Letter No. 48/2026: qualifying fees §2; UCL §1.1; UEL §1.2; UECL §1.3. Not modelled (small upside): redistribution of draw savings into league-ranking shares, and the qualifying-pot residual redistribution. The domestic-champion bonus (€260k) does not apply — Sabah is guaranteed a league phase. Figures are gross; final amounts depend on revenue actually received by UEFA and cannot be treated as guaranteed income.
+</p>
+
+</div>
+
+<script>
+const D = {
+  UCL:{ name:"Champions League", games:8, fee:18620000, win:2100000, draw:700000,
+        shareRank:275000, top8:2000000, top16:1000000,
+        ko:{KOPO:1000000,R16:11000000,QF:12500000,SF:15000000,F:18500000,W:6500000},
+        vEuro:935000, vNonEuro:346000, qual:0, qualLabel:"No qualifying-round fees (UCL play-off participant)"},
+  UELPO:{ name:"Europa League", games:8, fee:4310000, win:450000, draw:150000,
+        shareRank:75000, top8:600000, top16:300000,
+        ko:{KOPO:300000,R16:1750000,QF:2500000,SF:4200000,F:7000000,W:6000000},
+        vEuro:217000, vNonEuro:80000, qual:4290000, qualLabel:"UCL play-off elimination payment"},
+  UEL:{ name:"Europa League", games:8, fee:4310000, win:450000, draw:150000,
+        shareRank:75000, top8:600000, top16:300000,
+        ko:{KOPO:300000,R16:1750000,QF:2500000,SF:4200000,F:7000000,W:6000000},
+        vEuro:217000, vNonEuro:80000, qual:525000, qualLabel:"Qualifying fees: 3 rounds × €175k (UCL Q1, Q2, Q3)"},
+  UECL:{ name:"Conference League", games:6, fee:3170000, win:400000, draw:133000,
+        shareRank:28000, top8:400000, top16:200000,
+        ko:{KOPO:200000,R16:800000,QF:1300000,SF:2500000,F:4000000,W:3000000},
+        vEuro:63000, vNonEuro:23000, qual:700000, qualLabel:"Qualifying fees: 4 rounds × €175k (UCL Q1, Q2, Q3 + UEL PO)"}
+};
+const KO_ORDER = ["KOPO","R16","QF","SF","F","W"];
+const KO_LABEL = {KOPO:"KO play-off qualification",R16:"Round of 16 qualification",QF:"Quarter-final qualification",SF:"Semi-final qualification",F:"Final qualification",W:"Winners bonus"};
+
+const $ = id => document.getElementById(id);
+const fmt = n => "€" + n.toLocaleString("en-US");
+
+function branch(){ return document.querySelector('input[name="branch"]:checked').value; }
+
+function recalc(){
+  const b = branch(), c = D[b];
+  // style selected branch
+  document.querySelectorAll('#branches label').forEach(l=>{
+    l.classList.toggle('sel', l.querySelector('input').checked);
+  });
+  // adjust sliders to competition size
+  $('wins').max = c.games; $('draws').max = c.games;
+  if(+$('wins').value > c.games) $('wins').value = c.games;
+  if(+$('draws').value > c.games - +$('wins').value) $('draws').value = Math.max(0, c.games - +$('wins').value);
+  // clamp draws so wins+draws <= games
+  let wins = +$('wins').value, draws = +$('draws').value;
+  if(wins + draws > c.games){ draws = c.games - wins; $('draws').value = draws; }
+  const rank = +$('rank').value, vrank = +$('vrank').value, ko = $('ko').value;
+
+  $('compName').textContent = c.name;
+  $('compHint').textContent = c.games + " league-phase matches. Set results, final rank and value-pillar rank.";
+  $('perWin').textContent  = "€"+(c.win/1000)+"k";
+  $('perDraw').textContent = "€"+(c.draw/1000)+"k";
+  $('winsV').textContent = wins; $('drawsV').textContent = draws;
+  $('rankV').textContent = rank; $('vrankV').textContent = vrank;
+
+  // consistency warnings
+  let warn = "";
+  if(ko==="LP" && rank < 25) warn = "Rank 1–24 normally continues to the knockout stage — league-phase exit implies rank 25–36.";
+  if(ko!=="LP" && rank > 24) warn = "Rank 25–36 is eliminated in the league phase — pick 'Eliminated in league phase' or improve the rank.";
+  $('warnMsg').textContent = warn;
+  $('rankNote').textContent = rank<=8 ? "Top 8: direct to Round of 16 + €"+(c.top8/1e6)+"m ranking bonus."
+                        : rank<=16 ? "Rank 9–16: KO play-offs + €"+(c.top16/1e6*1000)+"k ranking bonus."
+                        : rank<=24 ? "Rank 9–24: KO play-offs, no extra ranking bonus."
+                        : "Rank 25–36: eliminated after the league phase.";
+
+  const rows = [];
+  let total = 0;
+  const add=(label,amt)=>{ rows.push([label,amt]); total+=amt; };
+
+  rows.push(["§ Qualifying phase", null]);
+  add(c.qualLabel, c.qual);
+
+  rows.push(["§ "+c.name+" league phase", null]);
+  add("Starting fee (equal share)", c.fee);
+  add(wins+" win"+(wins!==1?"s":"")+" × "+fmt(c.win), wins*c.win);
+  add(draws+" draw"+(draws!==1?"s":"")+" × "+fmt(c.draw), draws*c.draw);
+  const shares = 37-rank;
+  add("League ranking bonus — rank "+rank+" ("+shares+" share"+(shares!==1?"s":"")+" × "+fmt(c.shareRank)+")", shares*c.shareRank);
+  if(rank<=8) add("Top-8 bonus", c.top8);
+  else if(rank<=16) add("Rank 9–16 bonus", c.top16);
+
+  rows.push(["§ Value pillar", null]);
+  const vshares = 37-vrank;
+  add("European part ("+vshares+" × "+fmt(c.vEuro)+")", vshares*c.vEuro);
+  add("Non-European part ("+vshares+" × "+fmt(c.vNonEuro)+")", vshares*c.vNonEuro);
+
+  if(ko!=="LP"){
+    rows.push(["§ Knockout stage", null]);
+    const reached = KO_ORDER.slice(0, KO_ORDER.indexOf(ko)+1);
+    for(const st of reached){
+      if(st==="KOPO" && rank<=8) continue; // top 8 skip KO play-off
+      add(KO_LABEL[st], c.ko[st]);
+    }
+  }
+
+  $('total').innerHTML = fmt(total) + " <small>gross</small>";
+  const tbl = $('breakdown');
+  tbl.innerHTML = rows.map(([l,a])=>
+    a===null ? `<tr class="section"><td colspan="2">${l.slice(2)}</td></tr>`
+             : `<tr><td>${l}</td><td>${fmt(a)}</td></tr>`).join("")
+    + `<tr class="totalrow"><td>Total</td><td>${fmt(total)}</td></tr>`;
+}
+
+document.querySelectorAll('input,select').forEach(el=>{
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+recalc();
+</script>
+</body>
+</html>
