@@ -1,0 +1,12 @@
+{
+  "updated": "2026-07-31T18:44:07Z",
+  "source": "match.uefa.com v5",
+  "matches": [
+    {"comp":"UCL","phase":"QUALIFYING","round":"First qualifying round","status":"FINISHED","date":"2026-07-07T16:00:00Z","home":"Sabah","homeId":"2609356","away":"The New Saints","awayId":"60457","total":{"home":2,"away":0},"agg":{"home":4,"away":1},"aggWinnerId":"2609356","matchWinnerId":"2609356"},
+    {"comp":"UCL","phase":"QUALIFYING","round":"First qualifying round","status":"FINISHED","date":"2026-07-14T17:30:00Z","home":"The New Saints","homeId":"60457","away":"Sabah","awayId":"2609356","total":{"home":1,"away":2},"agg":{"home":1,"away":4},"aggWinnerId":"2609356","matchWinnerId":"2609356"},
+    {"comp":"UCL","phase":"QUALIFYING","round":"Second qualifying round","status":"FINISHED","date":"2026-07-21T16:00:00Z","home":"Sabah","homeId":"2609356","away":"KuPS Kuopio","awayId":"52350","total":{"home":1,"away":0},"agg":{"home":3,"away":0},"aggWinnerId":"2609356","matchWinnerId":"2609356"},
+    {"comp":"UCL","phase":"QUALIFYING","round":"Second qualifying round","status":"FINISHED","date":"2026-07-28T15:00:00Z","home":"KuPS Kuopio","homeId":"52350","away":"Sabah","awayId":"2609356","total":{"home":0,"away":2},"agg":{"home":0,"away":3},"aggWinnerId":"2609356","matchWinnerId":"2609356"},
+    {"comp":"UCL","phase":"QUALIFYING","round":"Third qualifying round","status":"UPCOMING","date":"2026-08-05T16:30:00Z","home":"Aarhus","homeId":"52709","away":"Sabah","awayId":"2609356","total":null,"agg":null,"aggWinnerId":null,"matchWinnerId":null},
+    {"comp":"UCL","phase":"QUALIFYING","round":"Third qualifying round","status":"UPCOMING","date":"2026-08-11T16:00:00Z","home":"Sabah","homeId":"2609356","away":"Aarhus","awayId":"52709","total":null,"agg":null,"aggWinnerId":null,"matchWinnerId":null}
+  ]
+}

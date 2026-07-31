@@ -264,7 +264,91 @@ document.querySelectorAll('input,select').forEach(el=>{
 });
 recalc();
 
-/* ---------- Live auto-update from Wikipedia (updated within minutes of full time) ---------- */
+/* ---------- Live auto-update: official UEFA data (matches.json, refreshed by GitHub Action
+   from match.uefa.com API every 6h) with Wikipedia as emergency fallback ---------- */
+const SABAH_ID = "2609356";
+async function fetchOfficial(){
+  const r = await fetch('matches.json?_='+Date.now(), {cache:'no-store'});
+  if(!r.ok) throw new Error('no matches.json');
+  return await r.json();
+}
+function tieState(ms, comp, roundRe){
+  const t = ms.filter(m=>m.comp===comp && m.round && roundRe.test(m.round));
+  if(!t.length) return {exists:false, won:null, opp:null};
+  const m0 = t[0];
+  const opp = String(m0.homeId)===SABAH_ID ? m0.away : m0.home;
+  const allDone = t.length>=2 && t.every(m=>m.status==='FINISHED');
+  const w = t.map(m=>m.aggWinnerId).find(x=>x!=null);
+  const won = (allDone && w!=null) ? (String(w)===SABAH_ID) : null;
+  return {exists:true, won, opp};
+}
+function leagueAutofill(ms){
+  const lg = ms.filter(m=>/league phase|matchday/i.test(m.round||'') || m.phase==='LEAGUE' || m.phase==='LEAGUE_PHASE');
+  const fin = lg.filter(m=>m.status==='FINISHED');
+  if(!fin.length) return null;
+  return {
+    played: fin.length,
+    wins: fin.filter(m=>String(m.matchWinnerId)===SABAH_ID).length,
+    draws: fin.filter(m=>m.matchWinnerId==null && m.total && m.total.home===m.total.away).length
+  };
+}
+function applyState(st, label, stamp){
+  const chip = document.getElementById('liveChip'), now = document.getElementById('chipNow');
+  const oppQ3 = st.q3.opp || 'TBD';
+  const tail = " <small>("+label+", "+stamp+")</small>";
+  if(st.q3.won === null){
+    setBranch(null, null);
+    now.innerHTML = "Now: <b>UCL Q3 vs "+oppQ3+"</b>";
+    chip.innerHTML = "🔄 UCL Q3 vs "+oppQ3+" not decided — all scenarios open"+tail;
+  } else if(st.q3.won === true){
+    if(st.po.won === true){
+      now.innerHTML = "Now: <b>Champions League league phase ✓</b>";
+      setBranch("UCL", ["UCL"]);
+      chip.innerHTML = "🔄 Sabah is in the UCL league phase!"+tail;
+    } else if(st.po.won === false){
+      now.innerHTML = "Now: <b>Europa League league phase (lost UCL PO)</b>";
+      setBranch("UELPO", ["UELPO"]);
+      chip.innerHTML = "🔄 Lost UCL play-off → Europa League league phase"+tail;
+    } else {
+      now.innerHTML = "Now: <b>UCL play-off"+(st.po.opp?" vs "+st.po.opp:"")+" (won Q3 ✓)</b>";
+      setBranch("UCL", ["UCL","UELPO"]);
+      chip.innerHTML = "🔄 Q3 won — play-off decides UCL vs UEL"+tail;
+    }
+  } else {
+    if(st.uelpo.won === true){
+      now.innerHTML = "Now: <b>Europa League league phase (won UEL PO ✓)</b>";
+      setBranch("UEL", ["UEL"]);
+      chip.innerHTML = "🔄 Won UEL play-off → Europa League league phase"+tail;
+    } else if(st.uelpo.won === false){
+      now.innerHTML = "Now: <b>Conference League league phase</b>";
+      setBranch("UECL", ["UECL"]);
+      chip.innerHTML = "🔄 Lost UEL play-off → Conference League league phase"+tail;
+    } else {
+      now.innerHTML = "Now: <b>UEL play-off"+(st.uelpo.opp?" vs "+st.uelpo.opp:"")+" (lost UCL Q3)</b>";
+      setBranch("UEL", ["UEL","UECL"]);
+      chip.innerHTML = "🔄 Lost Q3 — UEL play-off decides UEL vs UECL"+tail;
+    }
+  }
+}
+async function officialUpdate(){
+  const d = await fetchOfficial();
+  const ms = d.matches || [];
+  if(!ms.length) throw new Error('empty');
+  const st = {
+    q3:    tieState(ms, 'UCL', /third qual/i),
+    po:    tieState(ms, 'UCL', /play-?off/i),
+    uelpo: tieState(ms, 'UEL', /play-?off/i)
+  };
+  const stamp = d.updated ? new Date(d.updated).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) : "";
+  applyState(st, "official UEFA data", stamp);
+  const lf = leagueAutofill(ms);
+  if(lf){
+    const w=document.getElementById('wins'), dr=document.getElementById('draws');
+    w.value = Math.min(lf.wins, +w.max); dr.value = Math.min(lf.draws, +dr.max);
+    recalc();
+    document.getElementById('liveChip').innerHTML += " <small>· "+lf.played+" league matches auto-filled</small>";
+  }
+}
 async function wikitext(page){
   const u = "https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&origin=*&page=" + encodeURIComponent(page);
   const r = await fetch(u);
@@ -294,58 +378,29 @@ function setBranch(val, lockOthers){
   if(val){ document.querySelector('#branches input[value="'+val+'"]').checked = true; }
   recalc();
 }
-async function liveUpdate(){
-  const chip = document.getElementById('liveChip'), now = document.getElementById('chipNow');
-  try{
-    const ucl = await wikitext("2026–27 UEFA Champions League qualifying");
-    const t = sabahTies(ucl);           // [Q1, Q2, Q3, (UCL play-off)]
-    const q3 = t[2] ? t[2].won : null;
-    const po = t[3] ? t[3].won : null;
-    const stamp = new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"});
-    if(q3 === null){
-      setBranch(null, null);
-      chip.innerHTML = "🔄 Live: UCL Q3 not decided yet — all scenarios open <small>("+stamp+")</small>";
-    } else if(q3 === true){
-      if(po === true){
-        now.innerHTML = "Now: <b>Champions League league phase ✓</b>";
-        setBranch("UCL", ["UCL"]);
-        chip.innerHTML = "🔄 Live: Sabah is in the UCL league phase! <small>("+stamp+")</small>";
-      } else if(po === false){
-        now.innerHTML = "Now: <b>Europa League league phase (lost UCL PO)</b>";
-        setBranch("UELPO", ["UELPO"]);
-        chip.innerHTML = "🔄 Live: lost UCL play-off → Europa League league phase <small>("+stamp+")</small>";
-      } else {
-        now.innerHTML = "Now: <b>UCL play-off (won Q3 ✓)</b>";
-        setBranch("UCL", ["UCL","UELPO"]);
-        chip.innerHTML = "🔄 Live: Q3 won — play-off decides UCL vs UEL <small>("+stamp+")</small>";
-      }
-    } else { // lost Q3 -> UEL play-off; check UEL qualifying page
-      let uelpo = null;
-      try{
-        const uel = await wikitext("2026–27 UEFA Europa League qualifying");
-        const ut = sabahTies(uel);
-        if(ut.length) uelpo = ut[ut.length-1].won;
-      }catch(e){}
-      if(uelpo === true){
-        now.innerHTML = "Now: <b>Europa League league phase (won UEL PO ✓)</b>";
-        setBranch("UEL", ["UEL"]);
-        chip.innerHTML = "🔄 Live: won UEL play-off → Europa League league phase <small>("+stamp+")</small>";
-      } else if(uelpo === false){
-        now.innerHTML = "Now: <b>Conference League league phase</b>";
-        setBranch("UECL", ["UECL"]);
-        chip.innerHTML = "🔄 Live: lost UEL play-off → Conference League league phase <small>("+stamp+")</small>";
-      } else {
-        now.innerHTML = "Now: <b>UEL play-off (lost UCL Q3)</b>";
-        setBranch("UEL", ["UEL","UECL"]);
-        chip.innerHTML = "🔄 Live: lost Q3 — UEL play-off decides UEL vs UECL <small>("+stamp+")</small>";
-      }
-    }
-  }catch(e){
-    chip.innerHTML = "⚠️ Live results unavailable — set the scenario manually";
-    setBranch(null, null);
+async function wikiUpdate(){
+  const ucl = await wikitext("2026–27 UEFA Champions League qualifying");
+  const t = sabahTies(ucl);           // [Q1, Q2, Q3, (UCL play-off)]
+  const st = {
+    q3:    {exists: !!t[2], won: t[2] ? t[2].won : null, opp: null},
+    po:    {exists: !!t[3], won: t[3] ? t[3].won : null, opp: null},
+    uelpo: {exists: false, won: null, opp: null}
+  };
+  if(st.q3.won === false){
+    try{
+      const uel = await wikitext("2026–27 UEFA Europa League qualifying");
+      const ut = sabahTies(uel);
+      if(ut.length) st.uelpo = {exists:true, won: ut[ut.length-1].won, opp: null};
+    }catch(e){}
   }
+  applyState(st, "Wikipedia fallback", new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"}));
 }
-liveUpdate();
+(async function liveUpdate(){
+  try{ await officialUpdate(); return; }catch(e){}
+  try{ await wikiUpdate(); return; }catch(e){}
+  document.getElementById('liveChip').innerHTML = "⚠️ Live results unavailable — set the scenario manually";
+  setBranch(null, null);
+})();
 </script>
 </body>
 </html>
