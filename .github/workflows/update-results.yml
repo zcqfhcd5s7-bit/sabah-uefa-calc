@@ -1,0 +1,24 @@
+name: Update Sabah results from UEFA API
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official UEFA match data
+        run: |
+          curl -sf -A "Mozilla/5.0" "https://match.uefa.com/v5/matches?fromDate=2026-07-01&toDate=2027-06-30&teamId=2609356&order=ASC&limit=100&offset=0" -o raw.json
+          jq '{updated: now|todate, source: "match.uefa.com v5", matches: [.[] | {comp: ((try .competition.code) // null), phase: ((try .round.phase) // null), round: ((try .round.metaData.name) // null), status: .status, date: ((try .kickOffTime.dateTime) // (try .kickOffTime.date) // null), home: ((try .homeTeam.internationalName) // null), homeId: ((try .homeTeam.id) // null), away: ((try .awayTeam.internationalName) // null), awayId: ((try .awayTeam.id) // null), total: ((try .score.total) // null), agg: ((try .score.aggregate) // null), aggWinnerId: ((try .winner.aggregate.team.id) // null), matchWinnerId: ((try .winner.match.team.id) // null)}]}' raw.json > matches.json
+          rm raw.json
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add matches.json
+          git diff --cached --quiet || (git commit -m "Update Sabah results (official UEFA data)" && git push)
+
