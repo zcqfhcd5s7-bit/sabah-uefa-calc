@@ -63,8 +63,9 @@
     <span class="chip">Path: <b>UCL Champions Path</b></span>
     <span class="chip">Q1: <b>beat The New Saints</b> ✓</span>
     <span class="chip">Q2: <b>beat KuPS 3–0 agg</b> ✓</span>
-    <span class="chip">Now: <b>UCL Q3 vs Lech Poznań / AGF winner</b></span>
+    <span class="chip" id="chipNow">Now: <b>UCL Q3 vs Lech Poznań / AGF winner</b></span>
     <span class="chip">Guaranteed: <b>≥ Conference League league phase</b></span>
+    <span class="chip" id="liveChip" style="border-color:#5a8">⏳ Checking latest results…</span>
   </div>
 </header>
 
@@ -262,6 +263,89 @@ document.querySelectorAll('input,select').forEach(el=>{
   el.addEventListener('change', recalc);
 });
 recalc();
+
+/* ---------- Live auto-update from Wikipedia (updated within minutes of full time) ---------- */
+async function wikitext(page){
+  const u = "https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&origin=*&page=" + encodeURIComponent(page);
+  const r = await fetch(u);
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return (await r.json()).parse.wikitext;
+}
+// Returns array of {won:true|false|null, line} for each TwoLegResult tie involving Sabah, in page order
+function sabahTies(wt){
+  const ties = [];
+  const re = /\{\{TwoLegResult[^\n]*/g; let m;
+  while((m = re.exec(wt)) !== null){
+    const line = m[0];
+    if(!/Sabah/i.test(line)) continue;
+    let won = null;
+    const bolds = [...line.matchAll(/'''(.*?)'''/g)].map(x=>x[1]);
+    if(bolds.length) won = bolds.some(b=>/Sabah/i.test(b));    // winner is bolded on Wikipedia
+    ties.push({won, line});
+  }
+  return ties;
+}
+function setBranch(val, lockOthers){
+  document.querySelectorAll('#branches input').forEach(i=>{
+    const possible = !lockOthers || lockOthers.includes(i.value);
+    i.disabled = !possible;
+    i.closest('label').style.opacity = possible ? "1" : ".38";
+  });
+  if(val){ document.querySelector('#branches input[value="'+val+'"]').checked = true; }
+  recalc();
+}
+async function liveUpdate(){
+  const chip = document.getElementById('liveChip'), now = document.getElementById('chipNow');
+  try{
+    const ucl = await wikitext("2026–27 UEFA Champions League qualifying");
+    const t = sabahTies(ucl);           // [Q1, Q2, Q3, (UCL play-off)]
+    const q3 = t[2] ? t[2].won : null;
+    const po = t[3] ? t[3].won : null;
+    const stamp = new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+    if(q3 === null){
+      setBranch(null, null);
+      chip.innerHTML = "🔄 Live: UCL Q3 not decided yet — all scenarios open <small>("+stamp+")</small>";
+    } else if(q3 === true){
+      if(po === true){
+        now.innerHTML = "Now: <b>Champions League league phase ✓</b>";
+        setBranch("UCL", ["UCL"]);
+        chip.innerHTML = "🔄 Live: Sabah is in the UCL league phase! <small>("+stamp+")</small>";
+      } else if(po === false){
+        now.innerHTML = "Now: <b>Europa League league phase (lost UCL PO)</b>";
+        setBranch("UELPO", ["UELPO"]);
+        chip.innerHTML = "🔄 Live: lost UCL play-off → Europa League league phase <small>("+stamp+")</small>";
+      } else {
+        now.innerHTML = "Now: <b>UCL play-off (won Q3 ✓)</b>";
+        setBranch("UCL", ["UCL","UELPO"]);
+        chip.innerHTML = "🔄 Live: Q3 won — play-off decides UCL vs UEL <small>("+stamp+")</small>";
+      }
+    } else { // lost Q3 -> UEL play-off; check UEL qualifying page
+      let uelpo = null;
+      try{
+        const uel = await wikitext("2026–27 UEFA Europa League qualifying");
+        const ut = sabahTies(uel);
+        if(ut.length) uelpo = ut[ut.length-1].won;
+      }catch(e){}
+      if(uelpo === true){
+        now.innerHTML = "Now: <b>Europa League league phase (won UEL PO ✓)</b>";
+        setBranch("UEL", ["UEL"]);
+        chip.innerHTML = "🔄 Live: won UEL play-off → Europa League league phase <small>("+stamp+")</small>";
+      } else if(uelpo === false){
+        now.innerHTML = "Now: <b>Conference League league phase</b>";
+        setBranch("UECL", ["UECL"]);
+        chip.innerHTML = "🔄 Live: lost UEL play-off → Conference League league phase <small>("+stamp+")</small>";
+      } else {
+        now.innerHTML = "Now: <b>UEL play-off (lost UCL Q3)</b>";
+        setBranch("UEL", ["UEL","UECL"]);
+        chip.innerHTML = "🔄 Live: lost Q3 — UEL play-off decides UEL vs UECL <small>("+stamp+")</small>";
+      }
+    }
+  }catch(e){
+    chip.innerHTML = "⚠️ Live results unavailable — set the scenario manually";
+    setBranch(null, null);
+  }
+}
+liveUpdate();
 </script>
 </body>
 </html>
