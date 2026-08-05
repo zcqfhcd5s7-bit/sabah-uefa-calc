@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-05T14:41:37Z",
+  "updated": "2026-08-05T20:00:41Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -90,16 +90,19 @@
       "comp": "UCL",
       "phase": "QUALIFYING",
       "round": "Third qualifying round",
-      "status": "UPCOMING",
+      "status": "FINISHED",
       "date": "2026-08-05T16:30:00Z",
       "home": "Aarhus",
       "homeId": "50019",
       "away": "Sabah",
       "awayId": "2609356",
-      "total": null,
+      "total": {
+        "away": 1,
+        "home": 2
+      },
       "agg": null,
       "aggWinnerId": null,
-      "matchWinnerId": null
+      "matchWinnerId": "50019"
     },
     {
       "comp": "UCL",
