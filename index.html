@@ -147,7 +147,7 @@
     <h2>Projected UEFA income</h2>
     <div class="total" id="total">€0 <small>gross</small></div>
     <table id="breakdown"></table>
-    <div class="floor">
+    <div class="floor" id="floorBox">
       <b>Guaranteed floor: €3,984,000</b><br>
       Lose Q3 + lose UEL PO (€700k qualifying fees) + UECL starting fee €3.17m + minimum ranking share €28k + minimum value pillar €86k. Everything above this is upside.
     </div>
@@ -292,7 +292,34 @@ function leagueAutofill(ms){
     draws: fin.filter(m=>m.matchWinnerId==null && m.total && m.total.home===m.total.away).length
   };
 }
+function updateFloor(){
+  const st = window._liveState;
+  if(!st) return; // keep default text until live state is known
+  // Worst-case branch still reachable from the current state
+  let key, qualLabel;
+  if(st.q3.won === true){
+    if(st.po.won === true){ key="UCL"; qualLabel="UCL league phase secured"; }
+    else { key="UELPO"; qualLabel="worst case: lose UCL play-off (€4.29m PO payment)"; }
+  } else if(st.q3.won === false){
+    if(st.uelpo.won === true){ key="UEL"; qualLabel="UEL league phase secured (€525k qualifying fees)"; }
+    else { key="UECL"; qualLabel="worst case: lose UEL play-off (€700k qualifying fees)"; }
+  } else { key="UECL"; qualLabel="worst case: lose Q3 + lose UEL play-off (€700k qualifying fees)"; }
+  const c = D[key];
+  let floor = c.qual + c.fee + c.shareRank + c.vEuro + c.vNonEuro;
+  let banked = "";
+  const lf = window._banked;
+  if(lf && (lf.wins || lf.draws)){
+    const b = lf.wins*c.win + lf.draws*c.draw;
+    floor += b;
+    banked = " + "+fmt(b)+" already banked ("+lf.wins+"W "+lf.draws+"D)";
+  }
+  document.getElementById('floorBox').innerHTML =
+    "<b>Guaranteed floor: "+fmt(floor)+"</b><br>" +
+    qualLabel+" + "+D[key].name+" starting fee "+fmt(c.fee)+" + minimum ranking share "+fmt(c.shareRank)+
+    " + minimum value pillar "+fmt(c.vEuro+c.vNonEuro)+banked+". Updates automatically as results come in.";
+}
 function applyState(st, label, stamp){
+  window._liveState = st;
   const chip = document.getElementById('liveChip'), now = document.getElementById('chipNow');
   const oppQ3 = st.q3.opp || 'TBD';
   const tail = " <small>("+label+", "+stamp+")</small>";
@@ -329,6 +356,7 @@ function applyState(st, label, stamp){
       chip.innerHTML = "🔄 Lost Q3 — UEL play-off decides UEL vs UECL"+tail;
     }
   }
+  updateFloor();
 }
 async function officialUpdate(){
   const d = await fetchOfficial();
@@ -343,10 +371,12 @@ async function officialUpdate(){
   applyState(st, "official UEFA data", stamp);
   const lf = leagueAutofill(ms);
   if(lf){
+    window._banked = lf;
     const w=document.getElementById('wins'), dr=document.getElementById('draws');
     w.value = Math.min(lf.wins, +w.max); dr.value = Math.min(lf.draws, +dr.max);
     recalc();
     document.getElementById('liveChip').innerHTML += " <small>· "+lf.played+" league matches auto-filled</small>";
+    updateFloor();
   }
 }
 async function wikitext(page){
