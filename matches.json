@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-12T03:01:13Z",
+  "updated": "2026-08-12T07:56:40Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -151,8 +151,8 @@
       "date": "2026-08-25T16:45:00Z",
       "home": "Sabah",
       "homeId": "2609356",
-      "away": "Crvena Zvezda or H. Beer-Sheva",
-      "awayId": "2614961",
+      "away": "H. Beer-Sheva",
+      "awayId": "59340",
       "total": null,
       "agg": null,
       "aggWinnerId": null,
