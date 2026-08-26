@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-25T19:05:21Z",
+  "updated": "2026-08-26T02:04:17Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -143,17 +143,17 @@
         "home": 2
       },
       "agg": {
-        "away": 5,
+        "away": 6,
         "home": 4
       },
-      "aggWinnerId": null,
+      "aggWinnerId": "2609356",
       "matchWinnerId": "59340"
     },
     {
       "comp": "UCL",
       "phase": "QUALIFYING",
       "round": "Play-Offs",
-      "status": "LIVE",
+      "status": "FINISHED",
       "date": "2026-08-25T16:45:00Z",
       "home": "Sabah",
       "homeId": "2609356",
@@ -161,14 +161,14 @@
       "awayId": "59340",
       "total": {
         "away": 2,
-        "home": 4
+        "home": 5
       },
       "agg": {
         "away": 4,
-        "home": 5
+        "home": 6
       },
-      "aggWinnerId": null,
-      "matchWinnerId": null
+      "aggWinnerId": "2609356",
+      "matchWinnerId": "2609356"
     }
   ]
 }
