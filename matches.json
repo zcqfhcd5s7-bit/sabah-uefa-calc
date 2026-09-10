@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-10T16:32:24Z",
+  "updated": "2026-09-10T20:59:14Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -174,16 +174,19 @@
       "comp": "UCL",
       "phase": "TOURNAMENT",
       "round": "League Phase",
-      "status": "UPCOMING",
+      "status": "FINISHED",
       "date": "2026-09-10T19:00:00Z",
       "home": "Man Utd",
       "homeId": "52682",
       "away": "Sabah",
       "awayId": "2609356",
-      "total": null,
+      "total": {
+        "away": 0,
+        "home": 4
+      },
       "agg": null,
       "aggWinnerId": null,
-      "matchWinnerId": null
+      "matchWinnerId": "52682"
     },
     {
       "comp": "UCL",
