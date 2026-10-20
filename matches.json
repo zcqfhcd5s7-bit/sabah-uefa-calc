@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-20T11:52:15Z",
+  "updated": "2026-10-20T17:21:41Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -210,13 +210,16 @@
       "comp": "UCL",
       "phase": "TOURNAMENT",
       "round": "League Phase",
-      "status": "UPCOMING",
+      "status": "LIVE",
       "date": "2026-10-20T16:45:00Z",
       "home": "Sabah",
       "homeId": "2609356",
       "away": "B. Dortmund",
       "awayId": "52758",
-      "total": null,
+      "total": {
+        "away": 1,
+        "home": 0
+      },
       "agg": null,
       "aggWinnerId": null,
       "matchWinnerId": null
