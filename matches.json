@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-04T19:54:31Z",
+  "updated": "2026-11-05T07:03:06Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -228,16 +228,19 @@
       "comp": "UCL",
       "phase": "TOURNAMENT",
       "round": "League Phase",
-      "status": "UPCOMING",
+      "status": "FINISHED",
       "date": "2026-11-04T20:00:00Z",
       "home": "Viking",
       "homeId": "52319",
       "away": "Sabah",
       "awayId": "2609356",
-      "total": null,
+      "total": {
+        "away": 1,
+        "home": 4
+      },
       "agg": null,
       "aggWinnerId": null,
-      "matchWinnerId": null
+      "matchWinnerId": "52319"
     },
     {
       "comp": "UCL",
