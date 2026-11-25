@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-25T08:53:25Z",
+  "updated": "2026-11-25T21:50:53Z",
   "source": "match.uefa.com v5",
   "matches": [
     {
@@ -246,16 +246,19 @@
       "comp": "UCL",
       "phase": "TOURNAMENT",
       "round": "League Phase",
-      "status": "UPCOMING",
+      "status": "FINISHED",
       "date": "2026-11-25T17:45:00Z",
       "home": "Sabah",
       "homeId": "2609356",
       "away": "Barcelona",
       "awayId": "50080",
-      "total": null,
+      "total": {
+        "away": 4,
+        "home": 1
+      },
       "agg": null,
       "aggWinnerId": null,
-      "matchWinnerId": null
+      "matchWinnerId": "50080"
     },
     {
       "comp": "UCL",
